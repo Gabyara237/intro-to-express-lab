@@ -55,58 +55,15 @@ app.get('/collectibles/:index', (req, res) => {
   ];
 
     app.get('/shoes',(req,res)=>{
-        let minPriceShoes;
-        let maxPriceShoes;
-        let typeShoes;
-        const request = req.query;
-        let listResult=[];
+        const {['min-price']: min,['max-price']: max, type} = req.query;
+        
+        let results = shoes;
 
-        if(!("min-price" in request) && !("max-price" in request) && !("type" in request)){
-            res.send(shoes);
-            return;
-        }
+        if (min) results = results.filter((shoe) => shoe.price >= Number(min));
+        if (max) results = results.filter((shoe) => shoe.price <= Number(max));
+        if (type) results= results.filter((shoe) => shoe.type ===type);
 
-        if("min-price" in request){
-            minPriceShoes = req.query['min-price'];
-            if (listResult.length===0){
-                listResult= shoes.filter((shoe)=>{
-                    return shoe.price >= minPriceShoes;
-                })
-            }else if(listResult.length>0){
-                listResult = listResult.filter((shoe)=>{
-                    return shoe.price >= minPriceShoes;
-                })
-            }
-        }
-
-        if ("max-price" in request){
-            maxPriceShoes = req.query['max-price'];
-            if (listResult.length===0){
-                
-                listResult= shoes.filter((shoe)=>{
-                    return shoe.price <= maxPriceShoes;
-                })
-
-            }else if (listResult.length>0){
-                listResult = listResult.filter((shoe)=>{
-                    return shoe.price <= maxPriceShoes;
-                })
-            }
-        }
-
-        if ("type" in request){
-            typeShoes = req.query.type;
-            if(listResult.length === 0){
-                listResult= shoes.filter((shoe)=>{
-                    return shoe.type ===typeShoes;
-                })
-            }else{
-                listResult= listResult.filter((shoe)=>{
-                    return shoe.type ===typeShoes;
-                })
-            }
-        }
-        res.send(listResult);                
+        res.send(results)
 
     })
 
